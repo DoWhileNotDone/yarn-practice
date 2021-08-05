@@ -2,8 +2,33 @@
   "name": "app",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "test": "BABEL_ENV=test ava",
+    "build": "BABEL_ENV=build rollup -c"
+  },
+  "ava": {
+    "files": [
+      "test/**/*"
+    ],
+    "source": [
+      "src/*.{js}",
+      "!dist/**/*"
+    ],
+    "require": [
+      "@babel/register"
+    ],
+    "tap": true,
+    "babel": true
+  },
   "license": "MIT",
   "devDependencies": {
-    "ava": "^3.15.0"
+    "@ava/babel": "^2.0.0",
+    "@babel/core": "^7.15.0",
+    "@babel/plugin-external-helpers": "^7.14.5",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/register": "^7.14.5",
+    "@rollup/plugin-babel": "^5.3.0",
+    "ava": "^3.15.0",
+    "rollup": "^2.56.0"
   }
 }

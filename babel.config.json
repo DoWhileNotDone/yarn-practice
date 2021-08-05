@@ -1,0 +1,15 @@
+{
+    "env": {
+        "test": {
+            "presets": ["@babel/env"]
+        },
+        "build": {
+            "presets": [
+                [
+                    "@babel/env",
+                    {"modules": false}
+                ]
+            ]
+        }
+    }
+}  
