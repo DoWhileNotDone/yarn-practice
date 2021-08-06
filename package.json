@@ -1,6 +1,6 @@
 {
-  "name": "app",
-  "version": "1.0.0",
+  "name": "daveg-yarn-practice",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "test": "BABEL_ENV=test nyc ava",
