@@ -1,0 +1,53 @@
+defaults: &defaults
+  working_directory: ~/app
+  docker: 
+    - image: circleci/node
+
+version: 2.1
+jobs:
+  build:
+    <<: *defaults
+    steps: 
+      - checkout
+      - run:
+            name: yarn install
+            command: yarn
+      - save_cache:
+            key: v1-{{ arch }}-cache-{{ checksum "package.json" }}
+            paths:
+              - ./node_modules
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-{{ arch }}-cache-{{ checksum "package.json" }}
+      - run: 
+          name: Setup Test Output Dir
+          command: mkdir -p test/results/ava
+      - run: 
+          name: Run Tests 
+          command: yarn test | npx tap-xunit > test/results/ava/results.xml
+      - run:
+          name: Run Coverage Report
+          command: yarn run coverage > coverage-report.lcov 
+      - store_artifacts:
+          path: test/results/ava/results.xml
+          destination: test/results/ava/
+      - store_artifacts:
+          path: coverage-report.lcov 
+          destination: reports
+      - store_test_results: 
+          path: test/results
+
+workflows:
+  version: 2.1
+  build_and_test:
+    jobs:
+      - build
+      - test: 
+          requires: 
+            - build
+          filters: 
+            branches:
+              only: main
