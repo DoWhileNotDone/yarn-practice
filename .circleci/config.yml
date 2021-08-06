@@ -22,6 +22,12 @@ jobs:
       - checkout
       - restore_cache:
           key: v1-{{ arch }}-cache-{{ checksum "package.json" }}
+      - run:
+          name: Setup Code Climate Test Reporter
+          command: |        
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
       - run: 
           name: Setup Test Output Dir
           command: mkdir -p test/results/ava
@@ -30,7 +36,10 @@ jobs:
           command: yarn test | npx tap-xunit > test/results/ava/results.xml
       - run:
           name: Run Coverage Report
-          command: yarn run coverage > coverage-report.lcov 
+          command: yarn run coverage > coverage-report.lcov
+      - run:
+          name: Send coverage report to Code Climate
+          command: ./cc-test-reporter after-build -t lcov
       - store_artifacts:
           path: test/results/ava/results.xml
           destination: test/results/ava/
